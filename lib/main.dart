@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import './widgets/new_transaction.dart';
 import './widgets/transactions_list.dart';
-
+import './widgets/chart.dart';
 import './models/transaction.dart';
 
 void main() {
@@ -51,11 +51,21 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final List<Transaction> _userTransactions = [
-    // Transaction(id: '1', amount: 34.99, date: DateTime.now(), title: 'AirTag'),
+    Transaction(
+        id: '1',
+        amount: 34.99,
+        date: DateTime.now().subtract(Duration(days: 1)),
+        title: 'AirTag'),
     // Transaction(id: '2', amount: 30.99, date: DateTime.now(), title: 'MagSafe'),
     // Transaction(
     //     id: '3', amount: 959.00, date: DateTime.now(), title: 'iPhone 12'),
   ];
+
+  List<Transaction> get _recentTransactions {
+    return _userTransactions.where((tx) {
+      return tx.date.isAfter(DateTime.now().subtract(Duration(days: 7)));
+    }).toList();
+  }
 
   void _addTransaction(title, amount) {
     final transaction = Transaction(
@@ -97,19 +107,20 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: Column(
         children: [
-          // Top Banner
-          Container(
-            height: 100,
-            width: double.infinity,
-            child: Card(
-              child: Text('top banner'),
-              elevation: 5,
-            ),
-          ),
+          // // Top Banner
+          // Container(
+          //   height: 100,
+          //   width: double.infinity,
+          //   child: Card(
+          //     child: Text('top banner'),
+          //     elevation: 5,
+          //   ),
+          // ),
+          Chart(_recentTransactions),
           TransactionsList(_userTransactions),
         ],
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showAddTransactionModal(context),
         child: Icon(Icons.add),
